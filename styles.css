@@ -81,4 +81,23 @@ th {
         margin-bottom: 10px;
     }
 }
-
+figcaption {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+}
+.pie-chart {
+    display: flex;
+    margin-top: 30px;
+    text-align: center;
+    flex-flow: wrap;
+    place-content: center;
+    background-color: #f9f9f9;
+    padding: 20px;
+}
+#budget-chart {
+    max-width: 100%;
+    height: auto;
+    border-radius: 50%;;
+}

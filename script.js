@@ -5,6 +5,7 @@
     const totalExpenseEl = document.getElementById('total-expense');
     const totalSavingsEl = document.getElementById('total-savings');
     const balanceEl = document.getElementById('balance');
+    const ctx = document.getElementById('budget-chart').getContext('2d');
 
         let transactions = [];
 
@@ -62,3 +63,55 @@
             totalSavingsEl.textContent = savings.toFixed(2);
             balanceEl.textContent = balance.toFixed(2);
         }
+        let budgetChart;
+
+        function updateChart() {
+            const income = transactions
+                .filter(t => t.type === 'income')
+                .reduce((sum, t) => sum + t.amount, 0);
+            const expense = transactions
+                .filter(t => t.type === 'expense')
+                .reduce((sum, t) => sum + t.amount, 0);
+            const savings = transactions 
+                .filter(t => t.type === 'savings')
+                .reduce((sum, t) => sum + t.amount, 0);
+            const balance = income - expense - savings;
+            const total = income + expense + savings + balance;
+
+            const data = {
+                labels: ['Income','Expense', 'Savings', 'Balance'],
+                datasets: [{
+                    data: [income, expense, savings, balance ],
+                    backgroundColor: [ '#f44336', '#2196f3', '#ff9800'],
+                }]
+            };
+            if (budgetChart) {
+                budgetChart.data = data;
+                budgetChart.update();
+            } else {
+                budgetChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: data,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'left-side',
+                            },
+                            title: {
+                                display: true,
+                            }
+                        }
+                    },
+                });
+            }
+        }
+
+        // Update chart whenever transactions change
+        form.addEventListener('submit', updateChart);
+        window.removeTransaction = function(id) {
+            removeTransaction(id);
+            updateChart();
+        };
+        // Initial chart render
+        updateChart();
